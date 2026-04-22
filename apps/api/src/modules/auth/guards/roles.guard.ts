@@ -1,0 +1,35 @@
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+
+import type { Role } from '@apexcare/shared-types';
+
+import { ROLES_KEY } from '../../../common/decorators/roles.decorator';
+import { IS_PUBLIC_KEY } from '../../../common/decorators/public.decorator';
+import type { AuthActor } from '../../../common/types/auth-actor';
+
+@Injectable()
+export class RolesGuard implements CanActivate {
+  constructor(private readonly reflector: Reflector) {}
+
+  canActivate(ctx: ExecutionContext): boolean {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      ctx.getHandler(),
+      ctx.getClass(),
+    ]);
+    if (isPublic) return true;
+
+    const required = this.reflector.getAllAndOverride<Role[] | undefined>(ROLES_KEY, [
+      ctx.getHandler(),
+      ctx.getClass(),
+    ]);
+    if (!required || required.length === 0) return true;
+
+    const req = ctx.switchToHttp().getRequest<{ user?: AuthActor }>();
+    const user = req.user;
+    if (!user) throw new ForbiddenException('Not authenticated');
+    if (!required.includes(user.role)) {
+      throw new ForbiddenException(`Role ${user.role} not allowed`);
+    }
+    return true;
+  }
+}

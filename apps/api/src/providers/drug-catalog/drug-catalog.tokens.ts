@@ -1,0 +1,1 @@
+export const DRUG_CATALOG_PROVIDER = Symbol('DRUG_CATALOG_PROVIDER');

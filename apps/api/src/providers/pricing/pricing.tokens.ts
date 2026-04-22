@@ -1,0 +1,1 @@
+export const PRICING_PROVIDER = Symbol('PRICING_PROVIDER');

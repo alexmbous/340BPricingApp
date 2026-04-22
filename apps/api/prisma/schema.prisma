@@ -1,0 +1,298 @@
+// ApexCare 340B Pricing — Prisma schema
+// Design notes:
+//  - Row-level multi-tenancy via organization_id on every tenant-scoped model.
+//  - Canonical drug entity is Medication; all pricing/pharmacy lookups
+//    reference its rxcui as the stable id.
+//  - PharmacyNetworkEligibility is the legal/compliance guardrail that
+//    prevents pharmacies from being labeled "340B-eligible" without an
+//    explicit contract-pharmacy relationship with the covered entity.
+//  - AuditLog is append-only; see migrations/ for trigger-level enforcement.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  PARENT_ADMIN
+  ORG_ADMIN
+  PATIENT
+}
+
+enum PriceType {
+  RETAIL_CASH
+  DISCOUNT_CARD
+  CONTRACT_340B
+  INSURANCE_EST
+}
+
+enum DrugForm {
+  TABLET
+  CAPSULE
+  SOLUTION
+  SUSPENSION
+  INJECTION
+  CREAM
+  OTHER
+}
+
+// ─── Tenancy ─────────────────────────────────────────────────────
+
+model ParentOrganization {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organizations Organization[]
+  users         User[]
+
+  @@map("parent_organizations")
+}
+
+model Organization {
+  id                   String   @id @default(cuid())
+  parentOrganizationId String   @map("parent_organization_id")
+  name                 String
+  isCoveredEntity340B  Boolean  @default(false) @map("is_covered_entity_340b")
+  covered340BId        String?  @map("covered_340b_id") // HRSA 340B ID when applicable
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  parent             ParentOrganization           @relation(fields: [parentOrganizationId], references: [id])
+  users              User[]
+  patients           PatientProfile[]
+  contractPharmacies PharmacyNetworkEligibility[]
+
+  @@index([parentOrganizationId])
+  @@map("organizations")
+}
+
+// ─── Users ───────────────────────────────────────────────────────
+
+model User {
+  id                   String   @id @default(cuid())
+  email                String   @unique
+  passwordHash         String   @map("password_hash")
+  role                 Role
+  parentOrganizationId String?  @map("parent_organization_id")
+  organizationId       String?  @map("organization_id")
+  mfaEnrolled          Boolean  @default(false) @map("mfa_enrolled")
+  disabledAt           DateTime? @map("disabled_at")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  parentOrganization ParentOrganization? @relation(fields: [parentOrganizationId], references: [id])
+  organization       Organization?       @relation(fields: [organizationId], references: [id])
+  patientProfile     PatientProfile?
+  adminProfile       AdminProfile?
+  refreshTokens      RefreshToken[]
+
+  @@index([organizationId])
+  @@index([parentOrganizationId])
+  @@index([role])
+  @@map("users")
+}
+
+model AdminProfile {
+  userId    String  @id @map("user_id")
+  firstName String  @map("first_name")
+  lastName  String  @map("last_name")
+  title     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admin_profiles")
+}
+
+model PatientProfile {
+  id                      String    @id @default(cuid())
+  userId                  String    @unique @map("user_id")
+  organizationId          String    @map("organization_id")
+  firstName               String    @map("first_name")
+  lastName                String    @map("last_name")
+  dateOfBirth             DateTime  @map("date_of_birth") @db.Date
+  preferredPharmacyId     String?   @map("preferred_pharmacy_id")
+  eligibility340BAsserted Boolean   @default(false) @map("eligibility_340b_asserted")
+  eligibilityAssertedBy   String?   @map("eligibility_asserted_by")
+  eligibilityAssertedAt   DateTime? @map("eligibility_asserted_at")
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization      Organization        @relation(fields: [organizationId], references: [id])
+  preferredPharmacy Pharmacy?           @relation(fields: [preferredPharmacyId], references: [id])
+  medications       PatientMedication[]
+
+  @@index([organizationId])
+  @@index([lastName, firstName])
+  @@map("patient_profiles")
+}
+
+// ─── Drugs ───────────────────────────────────────────────────────
+
+model Medication {
+  id          String   @id @default(cuid())
+  rxcui       String   @unique
+  name        String
+  strength    String
+  form        DrugForm
+  displayName String   @map("display_name")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  codes              DrugCodeMapping[]
+  patientMedications PatientMedication[]
+
+  @@index([name])
+  @@map("medications")
+}
+
+model DrugCodeMapping {
+  id           String @id @default(cuid())
+  medicationId String @map("medication_id")
+  system       String // "NDC" | "RxNorm" | "SNOMED"
+  code         String
+
+  medication Medication @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+
+  @@unique([system, code])
+  @@index([medicationId])
+  @@map("drug_code_mappings")
+}
+
+model PatientMedication {
+  id               String    @id @default(cuid())
+  patientId        String    @map("patient_id")
+  medicationId     String    @map("medication_id")
+  assignedByUserId String    @map("assigned_by_user_id")
+  /// Fill quantity expressed in the drug form's natural unit — count for
+  /// tablets/capsules, mL for liquids, g for creams, doses for injections.
+  /// The unit is derived from the linked Medication's form so we don't
+  /// persist it here and risk drift.
+  quantity         Int       @default(30)
+  assignedAt       DateTime  @default(now()) @map("assigned_at")
+  removedAt        DateTime? @map("removed_at")
+  notes            String?
+
+  patient    PatientProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  medication Medication     @relation(fields: [medicationId], references: [id])
+
+  @@index([patientId])
+  @@index([medicationId])
+  @@map("patient_medications")
+}
+
+// ─── Pharmacies ──────────────────────────────────────────────────
+
+model Pharmacy {
+  id         String   @id @default(cuid())
+  externalId String?  @unique @map("external_id") // e.g. NCPDP id
+  name       String
+  address1   String
+  city       String
+  state      String
+  postalCode String   @map("postal_code")
+  lat        Float
+  lng        Float
+  phone      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  eligibility     PharmacyNetworkEligibility[]
+  preferredByList PatientProfile[]
+
+  @@index([state, postalCode])
+  @@map("pharmacies")
+}
+
+// Which pharmacies honor which pricing programs for which orgs.
+// This is what prevents us from labeling a random CVS as "340B-eligible".
+model PharmacyNetworkEligibility {
+  id             String    @id @default(cuid())
+  pharmacyId     String    @map("pharmacy_id")
+  organizationId String    @map("organization_id")
+  priceType      PriceType @map("price_type")
+  activeFrom     DateTime  @default(now()) @map("active_from")
+  activeTo       DateTime? @map("active_to")
+  source         String // "contract" | "tpa_feed" | "manual"
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  pharmacy     Pharmacy     @relation(fields: [pharmacyId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([pharmacyId, organizationId, priceType])
+  @@index([organizationId])
+  @@map("pharmacy_network_eligibility")
+}
+
+// ─── Pricing ─────────────────────────────────────────────────────
+
+model PricingQuote {
+  id             String    @id @default(cuid())
+  rxcui          String
+  pharmacyId     String    @map("pharmacy_id")
+  organizationId String?   @map("organization_id") // null => generic retail
+  priceType      PriceType @map("price_type")
+  amountCents    Int       @map("amount_cents")
+  currency       String    @default("USD")
+  sourceProvider String    @map("source_provider")
+  fetchedAt      DateTime  @default(now()) @map("fetched_at")
+  expiresAt      DateTime? @map("expires_at")
+
+  @@index([rxcui, pharmacyId])
+  @@index([organizationId])
+  @@map("pricing_quotes")
+}
+
+// ─── Auth ────────────────────────────────────────────────────────
+
+model RefreshToken {
+  id           String    @id @default(cuid())
+  userId       String    @map("user_id")
+  tokenHash    String    @unique @map("token_hash")
+  familyId     String    @map("family_id") // for reuse-detection
+  deviceLabel  String?   @map("device_label")
+  userAgent    String?   @map("user_agent")
+  ipAddress    String?   @map("ip_address")
+  issuedAt     DateTime  @default(now()) @map("issued_at")
+  expiresAt    DateTime  @map("expires_at")
+  revokedAt    DateTime? @map("revoked_at")
+  replacedById String?   @map("replaced_by_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([familyId])
+  @@map("refresh_tokens")
+}
+
+// ─── Audit ───────────────────────────────────────────────────────
+// Append-only. See migration for trigger enforcement.
+
+model AuditLog {
+  id                   String   @id @default(cuid())
+  actorUserId          String?  @map("actor_user_id")
+  actorRole            Role?    @map("actor_role")
+  organizationId       String?  @map("organization_id")
+  parentOrganizationId String?  @map("parent_organization_id")
+  action               String
+  resourceType         String?  @map("resource_type")
+  resourceId           String?  @map("resource_id")
+  metadata             Json?
+  ipAddress            String?  @map("ip_address")
+  userAgent            String?  @map("user_agent")
+  requestId            String?  @map("request_id")
+  createdAt            DateTime @default(now())
+
+  @@index([actorUserId, createdAt])
+  @@index([organizationId, createdAt])
+  @@index([action, createdAt])
+  @@map("audit_log")
+}
