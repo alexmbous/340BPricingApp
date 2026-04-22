@@ -1,8 +1,10 @@
 name: Deploy API
 
 # Builds + pushes the API image to Amazon ECR and deploys to ECS Fargate.
-# Triggers: push to main (staging) or a tagged release (production).
-# Required GitHub secrets:
+#
+# DISABLED FOR AUTO-TRIGGERS UNTIL AWS IS WIRED UP.
+# Once the following GitHub secrets are configured, re-enable the
+# `push` trigger below to auto-deploy on main / tagged releases:
 #   AWS_ROLE_TO_ASSUME     — IAM role with ECR/ECS deploy permissions
 #   AWS_REGION             — e.g. us-east-1
 #   ECR_REPOSITORY         — e.g. apexcare/api
@@ -12,9 +14,10 @@ name: Deploy API
 #   ECS_SERVICE_PRODUCTION — service name
 
 on:
-  push:
-    branches: [main]
-    tags: ['v*.*.*']
+  # Re-enable when AWS secrets are configured:
+  # push:
+  #   branches: [main]
+  #   tags: ['v*.*.*']
   workflow_dispatch:
     inputs:
       environment:
