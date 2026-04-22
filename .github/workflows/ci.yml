@@ -28,7 +28,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @apexcare/api prisma generate
+      - run: pnpm --filter @apexcare/api exec prisma generate
       - run: pnpm lint
       - run: pnpm typecheck
 
@@ -64,7 +64,8 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @apexcare/api prisma migrate deploy
+      - run: pnpm --filter @apexcare/api exec prisma generate
+      - run: pnpm --filter @apexcare/api exec prisma migrate deploy
       - run: pnpm --filter @apexcare/api test
       - run: pnpm --filter @apexcare/api test:e2e
 
