@@ -1,6 +1,6 @@
+import type { Role } from '@apexcare/shared-types';
 import { ConflictException, Injectable } from '@nestjs/common';
 
-import type { Role } from '@apexcare/shared-types';
 
 import { PrismaService } from '../../prisma/prisma.service';
 import { PasswordService } from '../auth/password.service';

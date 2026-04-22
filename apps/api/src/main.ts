@@ -6,9 +6,9 @@ import pinoHttp from 'pino-http';
 import { v4 as uuidv4 } from 'uuid';
 
 import { AppModule } from './app.module';
-import { AppConfigService } from './config/app-config.service';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { createLogger } from './common/logger';
+import { AppConfigService } from './config/app-config.service';
 
 async function bootstrap(): Promise<void> {
   const logger = createLogger('info'); // reconfigured below after config loads

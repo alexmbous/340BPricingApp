@@ -1,6 +1,6 @@
+import type { AuthUserSummary, LoginRequest } from '@apexcare/shared-types';
 import { create } from 'zustand';
 
-import type { AuthUserSummary, LoginRequest } from '@apexcare/shared-types';
 
 import { api, setUnauthorizedHandler, tokenStore } from '../lib/api-client';
 
@@ -13,7 +13,7 @@ interface AuthState {
   signOut: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   status: 'unknown',
   error: null,

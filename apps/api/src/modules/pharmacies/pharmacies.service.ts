@@ -1,7 +1,7 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import type { PharmacyDirectoryProvider } from '@apexcare/providers-contracts';
 import type { PharmacyDto } from '@apexcare/shared-types';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import { PrismaService } from '../../prisma/prisma.service';
 import { PHARMACY_DIRECTORY_PROVIDER } from '../../providers/pharmacy-directory/pharmacy-directory.tokens';

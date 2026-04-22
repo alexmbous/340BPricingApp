@@ -1,12 +1,12 @@
+import type { AuditLogEntryDto } from '@apexcare/shared-types';
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
-import type { AuditLogEntryDto } from '@apexcare/shared-types';
 
-import { PrismaService } from '../../prisma/prisma.service';
+import { clampLimit } from '../../common/pipes/cursor.util';
 import { buildOrganizationScope } from '../../common/tenancy/tenant-scope';
 import type { AuthActor } from '../../common/types/auth-actor';
-import { clampLimit } from '../../common/pipes/cursor.util';
+import { PrismaService } from '../../prisma/prisma.service';
 
 export interface WriteAuditInput {
   actorUserId: string | null;

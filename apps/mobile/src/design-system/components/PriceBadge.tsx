@@ -1,6 +1,6 @@
+import { PRICE_TYPE_DISPLAY, type PriceType } from '@apexcare/shared-types';
 import React from 'react';
 
-import { PRICE_TYPE_DISPLAY, type PriceType } from '@apexcare/shared-types';
 
 import { Badge, type BadgeTone } from './Badge';
 

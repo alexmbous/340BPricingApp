@@ -12,9 +12,9 @@ import {
   Text,
   spacing,
 } from '../../src/design-system';
+import { humanAction } from '../../src/features/audit/action-labels';
 import { useAuditLog } from '../../src/features/audit/hooks';
 import { usePatientsList } from '../../src/features/patients/hooks';
-import { humanAction } from '../../src/features/audit/action-labels';
 import { describeError } from '../../src/lib/errors';
 import { useAuthStore } from '../../src/state/auth';
 

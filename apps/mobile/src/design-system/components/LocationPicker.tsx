@@ -1,8 +1,8 @@
+import { ApiError } from '@apexcare/api-client';
 import { Feather } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { ApiError } from '@apexcare/api-client';
 
 import { useResolveZip } from '../../features/locations/hooks';
 import { describeError } from '../../lib/errors';

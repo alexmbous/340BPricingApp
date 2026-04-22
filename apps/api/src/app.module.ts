@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClsModule } from 'nestjs-cls';
 
-import { AuditModule } from './modules/audit/audit.module';
+import { AppConfigModule } from './config/app-config.module';
 import { AuditInterceptor } from './modules/audit/audit.interceptor';
+import { AuditModule } from './modules/audit/audit.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
@@ -16,7 +17,6 @@ import { PatientsModule } from './modules/patients/patients.module';
 import { PharmaciesModule } from './modules/pharmacies/pharmacies.module';
 import { PricingModule } from './modules/pricing/pricing.module';
 import { UsersModule } from './modules/users/users.module';
-import { AppConfigModule } from './config/app-config.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({

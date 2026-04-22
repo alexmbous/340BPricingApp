@@ -1,7 +1,7 @@
+import type { AuthUserSummary } from '@apexcare/shared-types';
 import { Body, Controller, Get, HttpCode, Post, Req, Version } from '@nestjs/common';
 import type { Request } from 'express';
 
-import type { AuthUserSummary } from '@apexcare/shared-types';
 
 import { Audit } from '../../common/decorators/audit.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';

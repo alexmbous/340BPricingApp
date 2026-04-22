@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-
 import type {
   GeoPoint,
   PharmacyDirectoryProvider,
   PharmacyRef,
 } from '@apexcare/providers-contracts';
+import { Injectable } from '@nestjs/common';
+
 
 interface SeedPharmacy {
   id: string;

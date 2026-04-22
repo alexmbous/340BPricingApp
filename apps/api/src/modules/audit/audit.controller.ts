@@ -1,6 +1,6 @@
+import { ADMIN_ROLES } from '@apexcare/shared-types';
 import { Controller, Get, Query, Version } from '@nestjs/common';
 
-import { ADMIN_ROLES } from '@apexcare/shared-types';
 
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';

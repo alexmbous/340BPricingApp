@@ -1,6 +1,6 @@
+import type { PricingCompareRequest, PricingCompareResponse } from '@apexcare/shared-types';
 import { useQuery } from '@tanstack/react-query';
 
-import type { PricingCompareRequest, PricingCompareResponse } from '@apexcare/shared-types';
 
 import { api } from '../../lib/api-client';
 

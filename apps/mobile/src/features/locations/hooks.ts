@@ -1,6 +1,6 @@
+import type { ZipGeocodeResultDto } from '@apexcare/shared-types';
 import { useQuery } from '@tanstack/react-query';
 
-import type { ZipGeocodeResultDto } from '@apexcare/shared-types';
 
 import { api } from '../../lib/api-client';
 

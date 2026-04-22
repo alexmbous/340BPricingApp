@@ -1,8 +1,8 @@
+import type { PharmacyDto } from '@apexcare/shared-types';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useQuery } from '@tanstack/react-query';
 
-import type { PharmacyDto } from '@apexcare/shared-types';
 
 import {
   Card,

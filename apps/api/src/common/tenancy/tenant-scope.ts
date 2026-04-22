@@ -1,7 +1,6 @@
-import { ForbiddenException } from '@nestjs/common';
-
 import type { Role } from '@apexcare/shared-types';
 import { Roles } from '@apexcare/shared-types';
+import { ForbiddenException } from '@nestjs/common';
 
 import type { AuthActor } from '../types/auth-actor';
 

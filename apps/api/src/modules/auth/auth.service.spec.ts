@@ -1,5 +1,6 @@
-import { buildOrganizationScope } from '../../common/tenancy/tenant-scope';
 import { Roles } from '@apexcare/shared-types';
+
+import { buildOrganizationScope } from '../../common/tenancy/tenant-scope';
 
 // Simple unit test that the guardrail helper doesn't regress silently.
 describe('buildOrganizationScope', () => {

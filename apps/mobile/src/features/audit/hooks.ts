@@ -1,6 +1,6 @@
+import type { AuditLogEntryDto, Page } from '@apexcare/shared-types';
 import { useQuery } from '@tanstack/react-query';
 
-import type { AuditLogEntryDto, Page } from '@apexcare/shared-types';
 
 import { api } from '../../lib/api-client';
 

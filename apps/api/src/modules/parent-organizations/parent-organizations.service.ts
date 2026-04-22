@@ -1,9 +1,9 @@
+import { Roles } from '@apexcare/shared-types';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 
-import { Roles } from '@apexcare/shared-types';
 
-import { PrismaService } from '../../prisma/prisma.service';
 import type { AuthActor } from '../../common/types/auth-actor';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class ParentOrganizationsService {

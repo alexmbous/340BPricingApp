@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { AppConfigService } from '../../../config/app-config.service';
 import type { AuthActor } from '../../../common/types/auth-actor';
+import { AppConfigService } from '../../../config/app-config.service';
 import type { AccessTokenClaims } from '../auth.service';
 
 @Injectable()

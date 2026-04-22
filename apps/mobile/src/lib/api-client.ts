@@ -1,6 +1,6 @@
+import { ApiClient } from '@apexcare/api-client';
 import Constants from 'expo-constants';
 
-import { ApiClient } from '@apexcare/api-client';
 
 import { createSecureTokenStore } from './token-store';
 

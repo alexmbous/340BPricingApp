@@ -1,7 +1,7 @@
+import { Roles as RolesEnum } from '@apexcare/shared-types';
 import { Body, Controller, Get, Param, Post, UseGuards, Version } from '@nestjs/common';
 import { IsBoolean, IsEmail, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
-import { Roles as RolesEnum } from '@apexcare/shared-types';
 
 import { Audit } from '../../common/decorators/audit.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';

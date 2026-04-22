@@ -1,7 +1,7 @@
+import { ApiError } from '@apexcare/api-client';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 
-import { ApiError } from '@apexcare/api-client';
 
 import { Button, Screen, Text, TextInput, palette, spacing } from '../../src/design-system';
 import { useAuthStore } from '../../src/state/auth';

@@ -1,4 +1,3 @@
-import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import type {
   EligibilityProvider,
@@ -16,12 +15,13 @@ import {
   PriceTypes,
   Roles,
 } from '@apexcare/shared-types';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import type { AuthActor } from '../../common/types/auth-actor';
 import { PrismaService } from '../../prisma/prisma.service';
+import { ELIGIBILITY_PROVIDER } from '../../providers/eligibility/eligibility.tokens';
 import { PHARMACY_DIRECTORY_PROVIDER } from '../../providers/pharmacy-directory/pharmacy-directory.tokens';
 import { PRICING_PROVIDER } from '../../providers/pricing/pricing.tokens';
-import { ELIGIBILITY_PROVIDER } from '../../providers/eligibility/eligibility.tokens';
 import { AuditService } from '../audit/audit.service';
 
 @Injectable()

@@ -1,6 +1,6 @@
+import { ApiError } from '@apexcare/api-client';
 import { QueryClient } from '@tanstack/react-query';
 
-import { ApiError } from '@apexcare/api-client';
 
 export const queryClient = new QueryClient({
   defaultOptions: {

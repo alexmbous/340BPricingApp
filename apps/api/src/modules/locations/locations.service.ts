@@ -1,10 +1,10 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import type {
   LocationResolverProvider,
   ZipResolution,
 } from '@apexcare/providers-contracts';
 import type { ZipGeocodeResultDto } from '@apexcare/shared-types';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import { LOCATION_RESOLVER_PROVIDER } from '../../providers/location-resolver/location-resolver.tokens';
 

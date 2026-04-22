@@ -1,8 +1,8 @@
+import { DRUG_FORM_LABEL, type MedicationDto } from '@apexcare/shared-types';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { DRUG_FORM_LABEL, type MedicationDto } from '@apexcare/shared-types';
 
 import {
   Badge,
@@ -21,10 +21,10 @@ import {
   radius,
   spacing,
 } from '../../../../src/design-system';
-import { useDebounced } from '../../../../src/lib/debounce';
-import { describeError } from '../../../../src/lib/errors';
 import { useMedicationSearch } from '../../../../src/features/medication-search/hooks';
 import { useAssignMedication } from '../../../../src/features/patients/hooks';
+import { useDebounced } from '../../../../src/lib/debounce';
+import { describeError } from '../../../../src/lib/errors';
 
 export default function AssignMedicationScreen(): React.ReactElement {
   const { id } = useLocalSearchParams<{ id: string }>();

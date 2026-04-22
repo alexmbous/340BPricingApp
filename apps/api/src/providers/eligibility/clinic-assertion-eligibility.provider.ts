@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 
 import type {
   EligibilityDecision,
@@ -6,6 +5,7 @@ import type {
   EligibilityProvider,
 } from '@apexcare/providers-contracts';
 import { PriceTypes } from '@apexcare/shared-types';
+import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../../prisma/prisma.service';
 

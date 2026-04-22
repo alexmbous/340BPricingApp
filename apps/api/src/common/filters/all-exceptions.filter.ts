@@ -1,3 +1,4 @@
+import type { ProblemDetails, FieldError } from '@apexcare/shared-types';
 import {
   ArgumentsHost,
   BadRequestException,
@@ -9,8 +10,6 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import type { Request, Response } from 'express';
-
-import type { ProblemDetails, FieldError } from '@apexcare/shared-types';
 
 // Global error filter. Emits RFC 7807 problem details for every error.
 @Catch()

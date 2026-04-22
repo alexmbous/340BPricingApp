@@ -1,7 +1,3 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { v4 as uuidv4 } from 'uuid';
-
 import type {
   AuthTokenPair,
   AuthUserSummary,
@@ -9,6 +5,10 @@ import type {
   LoginResponse,
   Role,
 } from '@apexcare/shared-types';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { v4 as uuidv4 } from 'uuid';
+
 
 import { AppConfigService } from '../../config/app-config.service';
 import { PrismaService } from '../../prisma/prisma.service';

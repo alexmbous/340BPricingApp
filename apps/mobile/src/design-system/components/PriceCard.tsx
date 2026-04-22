@@ -1,11 +1,11 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-
 import {
   PRICE_TYPE_DISPLAY,
   packLabel,
   type PricingQuoteDto,
 } from '@apexcare/shared-types';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+
 
 import { formatCurrencyCents, formatMiles } from '../../lib/format';
 import { palette, radius, spacing } from '../tokens';

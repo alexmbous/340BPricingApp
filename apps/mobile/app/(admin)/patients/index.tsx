@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import {
-  Button,
   EmptyState,
   InlineBanner,
   ListItem,
@@ -16,9 +15,9 @@ import {
   palette,
   spacing,
 } from '../../../src/design-system';
+import { usePatientsList } from '../../../src/features/patients/hooks';
 import { useDebounced } from '../../../src/lib/debounce';
 import { describeError } from '../../../src/lib/errors';
-import { usePatientsList } from '../../../src/features/patients/hooks';
 import { useAuthStore } from '../../../src/state/auth';
 
 export default function AdminPatientsListScreen(): React.ReactElement {

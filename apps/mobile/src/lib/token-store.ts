@@ -1,6 +1,6 @@
+import type { AuthTokenPair, TokenStore } from '@apexcare/api-client';
 import * as SecureStore from 'expo-secure-store';
 
-import type { AuthTokenPair, TokenStore } from '@apexcare/api-client';
 
 const ACCESS_KEY = 'apexcare.access';
 const REFRESH_KEY = 'apexcare.refresh';

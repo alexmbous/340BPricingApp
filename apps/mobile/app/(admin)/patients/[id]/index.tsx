@@ -4,7 +4,6 @@ import { Pressable, StyleSheet, Switch, View } from 'react-native';
 
 import {
   Badge,
-  Button,
   Card,
   Divider,
   EmptyState,

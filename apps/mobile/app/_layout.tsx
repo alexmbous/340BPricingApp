@@ -6,8 +6,8 @@ import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { palette } from '../src/design-system/tokens';
-import { queryClient } from '../src/state/query-client';
 import { useAuthStore, isAdmin } from '../src/state/auth';
+import { queryClient } from '../src/state/query-client';
 
 export default function RootLayout(): React.ReactElement {
   const { status, user, hydrate } = useAuthStore();

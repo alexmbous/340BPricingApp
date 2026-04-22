@@ -1,9 +1,8 @@
+import { Roles } from '@apexcare/shared-types';
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { Roles } from '@apexcare/shared-types';
 
-import type { AuthActor } from '../../../common/types/auth-actor';
 import {
   TENANT_SCOPE_KEY,
   type TenantScopeOptions,
@@ -12,6 +11,7 @@ import {
   actorCanReachOrganization,
   canActOnParentOrganization,
 } from '../../../common/tenancy/tenant-scope';
+import type { AuthActor } from '../../../common/types/auth-actor';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 /**

@@ -1,10 +1,10 @@
+import type { Role } from '@apexcare/shared-types';
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import type { Role } from '@apexcare/shared-types';
 
-import { ROLES_KEY } from '../../../common/decorators/roles.decorator';
 import { IS_PUBLIC_KEY } from '../../../common/decorators/public.decorator';
+import { ROLES_KEY } from '../../../common/decorators/roles.decorator';
 import type { AuthActor } from '../../../common/types/auth-actor';
 
 @Injectable()

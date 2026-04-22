@@ -6,9 +6,9 @@ import { AppConfigService } from '../../config/app-config.service';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './strategies/jwt.strategy';
 import { PasswordService } from './password.service';
 import { RefreshTokenService } from './refresh-token.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [

@@ -1,7 +1,7 @@
+import type { AuditLogEntryDto } from '@apexcare/shared-types';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
-import type { AuditLogEntryDto } from '@apexcare/shared-types';
 
 import {
   Badge,
@@ -16,8 +16,8 @@ import {
   radius,
   spacing,
 } from '../../src/design-system';
-import { useAuditLog } from '../../src/features/audit/hooks';
 import { AUDIT_FILTERS, humanAction } from '../../src/features/audit/action-labels';
+import { useAuditLog } from '../../src/features/audit/hooks';
 import { describeError } from '../../src/lib/errors';
 
 export default function AdminAuditScreen(): React.ReactElement {

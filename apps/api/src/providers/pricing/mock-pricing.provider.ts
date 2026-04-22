@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto';
 
-import { Injectable } from '@nestjs/common';
 
 import type {
   PricingGetQuotesInput,
@@ -8,6 +7,7 @@ import type {
   PricingQuoteResult,
 } from '@apexcare/providers-contracts';
 import { PriceTypes, type PriceType } from '@apexcare/shared-types';
+import { Injectable } from '@nestjs/common';
 
 /**
  * Deterministic mock pricing: given (rxcui, pharmacyId), always returns

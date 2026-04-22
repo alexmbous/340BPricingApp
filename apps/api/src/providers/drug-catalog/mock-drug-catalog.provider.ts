@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 
 import type {
   DrugCatalogHit,
@@ -7,6 +6,7 @@ import type {
   DrugSearchInput,
 } from '@apexcare/providers-contracts';
 import { DrugForms, type DrugForm } from '@apexcare/shared-types';
+import { Injectable } from '@nestjs/common';
 
 // A small, deterministic subset of common outpatient drugs. Real RxCUIs
 // from RxNorm (https://mor.nlm.nih.gov/RxNav/) — used so future migration

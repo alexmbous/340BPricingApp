@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-
 import type {
   LocationResolverProvider,
   ZipResolution,
 } from '@apexcare/providers-contracts';
+import { Injectable } from '@nestjs/common';
+
 
 // Seeded ZIP centroids for the cities where MOCK_PHARMACY_SEED places
 // pharmacies. Coordinates are approximate ZIP centroids rounded to 4

@@ -1,8 +1,8 @@
+import { DRUG_FORM_LABEL, type MedicationDto } from '@apexcare/shared-types';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { DRUG_FORM_LABEL, type MedicationDto } from '@apexcare/shared-types';
 
 import {
   Badge,
@@ -16,9 +16,9 @@ import {
   Text,
   spacing,
 } from '../../../src/design-system';
+import { useMedicationSearch } from '../../../src/features/medication-search/hooks';
 import { useDebounced } from '../../../src/lib/debounce';
 import { describeError } from '../../../src/lib/errors';
-import { useMedicationSearch } from '../../../src/features/medication-search/hooks';
 
 export default function MedicationSearchScreen(): React.ReactElement {
   const router = useRouter();

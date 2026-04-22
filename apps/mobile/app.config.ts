@@ -26,7 +26,6 @@ const config: ExpoConfig = {
   version: '0.1.0',
   orientation: 'portrait',
   userInterfaceStyle: 'automatic',
-  newArchEnabled: true,
   splash: {
     resizeMode: 'contain',
     backgroundColor: '#0B1220',

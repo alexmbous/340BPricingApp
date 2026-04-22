@@ -1,10 +1,10 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { Roles } from '@apexcare/shared-types';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
-import { PrismaService } from '../../prisma/prisma.service';
 import { buildOrganizationScope, canActOnParentOrganization } from '../../common/tenancy/tenant-scope';
 import type { AuthActor } from '../../common/types/auth-actor';
+import { PrismaService } from '../../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 
 export interface CreateOrganizationInput {

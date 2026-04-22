@@ -1,6 +1,5 @@
-import { SetMetadata } from '@nestjs/common';
-
 import type { AuditAction } from '@apexcare/shared-types';
+import { SetMetadata } from '@nestjs/common';
 
 export const AUDIT_META_KEY = 'audit:action';
 

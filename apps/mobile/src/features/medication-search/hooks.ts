@@ -1,6 +1,6 @@
+import type { MedicationDto } from '@apexcare/shared-types';
 import { useQuery } from '@tanstack/react-query';
 
-import type { MedicationDto } from '@apexcare/shared-types';
 
 import { api } from '../../lib/api-client';
 

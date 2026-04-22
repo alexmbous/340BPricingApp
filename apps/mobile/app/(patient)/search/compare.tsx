@@ -1,8 +1,8 @@
+import { DrugForms, type DrugForm } from '@apexcare/shared-types';
 import { useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { DrugForms, type DrugForm } from '@apexcare/shared-types';
 
 import {
   Card,

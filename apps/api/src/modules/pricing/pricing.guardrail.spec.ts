@@ -7,15 +7,15 @@
  *
  * We mock the Prisma surface and provider deps so this is a pure unit test.
  */
+import { DrugForms, PriceTypes, Roles } from '@apexcare/shared-types';
 import { Test } from '@nestjs/testing';
 
-import { PriceTypes, Roles } from '@apexcare/shared-types';
 
 import type { AuthActor } from '../../common/types/auth-actor';
+import { PrismaService } from '../../prisma/prisma.service';
+import { ELIGIBILITY_PROVIDER } from '../../providers/eligibility/eligibility.tokens';
 import { PHARMACY_DIRECTORY_PROVIDER } from '../../providers/pharmacy-directory/pharmacy-directory.tokens';
 import { PRICING_PROVIDER } from '../../providers/pricing/pricing.tokens';
-import { ELIGIBILITY_PROVIDER } from '../../providers/eligibility/eligibility.tokens';
-import { PrismaService } from '../../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 
 import { PricingService } from './pricing.service';
@@ -24,6 +24,7 @@ const PATIENT_ID = 'pat_1';
 const ORG_ID = 'org_1';
 const PHARMACY_A = 'pharm_a'; // in contract
 const PHARMACY_B = 'pharm_b'; // NOT in contract
+const RXCUI = '617314';
 
 function makePrisma(opts: {
   orgIsCoveredEntity: boolean;
@@ -31,6 +32,18 @@ function makePrisma(opts: {
   contractedPharmacyIds: string[];
 }): Partial<PrismaService> {
   return {
+    medication: {
+      findUnique: jest.fn(() =>
+        Promise.resolve({
+          id: 'med_1',
+          rxcui: RXCUI,
+          name: 'Atorvastatin',
+          strength: '20 mg',
+          form: DrugForms.TABLET,
+          displayName: 'Atorvastatin 20 mg tablet',
+        }),
+      ),
+    } as unknown as PrismaService['medication'],
     patientProfile: {
       findUnique: jest.fn((args: { where: { id?: string; userId?: string } }) => {
         if (args.where.id === PATIENT_ID || args.where.userId === 'user_1') {
@@ -78,17 +91,39 @@ function nearby(): unknown {
   };
 }
 
+function quote(
+  pharmacyId: string,
+  priceType: (typeof PriceTypes)[keyof typeof PriceTypes],
+  amountCents: number,
+  quantity: number,
+  unit: string,
+): Record<string, unknown> {
+  return {
+    pharmacyId,
+    priceType,
+    amountCents,
+    unitPriceCents: Math.round(amountCents / quantity),
+    quantity,
+    unit,
+    currency: 'USD',
+    sourceProvider: 'mock',
+    fetchedAt: new Date(),
+  };
+}
+
 function quotes(hints: string[]): unknown {
   return {
-    getQuotes: jest.fn(() => {
+    getQuotes: jest.fn((input: { quantity: number; unit: string }) => {
+      const q = input.quantity;
+      const u = input.unit;
       const base = [
-        { pharmacyId: PHARMACY_A, priceType: PriceTypes.RETAIL_CASH, amountCents: 5000, currency: 'USD', sourceProvider: 'mock', fetchedAt: new Date() },
-        { pharmacyId: PHARMACY_B, priceType: PriceTypes.RETAIL_CASH, amountCents: 4000, currency: 'USD', sourceProvider: 'mock', fetchedAt: new Date() },
+        quote(PHARMACY_A, PriceTypes.RETAIL_CASH, 5000, q, u),
+        quote(PHARMACY_B, PriceTypes.RETAIL_CASH, 4000, q, u),
       ];
       if (hints.includes(PriceTypes.CONTRACT_340B)) {
         base.push(
-          { pharmacyId: PHARMACY_A, priceType: PriceTypes.CONTRACT_340B, amountCents: 800, currency: 'USD', sourceProvider: 'mock', fetchedAt: new Date() },
-          { pharmacyId: PHARMACY_B, priceType: PriceTypes.CONTRACT_340B, amountCents: 700, currency: 'USD', sourceProvider: 'mock', fetchedAt: new Date() },
+          quote(PHARMACY_A, PriceTypes.CONTRACT_340B, 800, q, u),
+          quote(PHARMACY_B, PriceTypes.CONTRACT_340B, 700, q, u),
         );
       }
       return Promise.resolve(base);
@@ -125,7 +160,7 @@ async function build(
 
 describe('PricingService 340B guardrail', () => {
   const req = {
-    rxcui: '617314',
+    rxcui: RXCUI,
     location: { lat: 0, lng: 0, radiusMiles: 10 },
     limit: 10,
   };
@@ -180,5 +215,16 @@ describe('PricingService 340B guardrail', () => {
     const res = await svc.compare(PATIENT_ACTOR, req);
     const amounts = res.quotes.map((q) => q.amountCents);
     expect([...amounts].sort((a, b) => a - b)).toEqual(amounts);
+  });
+
+  it('echoes the form-derived default quantity + unit on the response', async () => {
+    const svc = await build(
+      makePrisma({ orgIsCoveredEntity: true, patientAsserted: true, contractedPharmacyIds: [PHARMACY_A] }),
+      quotes([]),
+    );
+    const res = await svc.compare(PATIENT_ACTOR, req);
+    expect(res.quantity).toBe(30); // TABLET default
+    expect(res.unit).toBe('tablets');
+    expect(res.quotes.every((q) => q.quantity === 30 && q.unit === 'tablets')).toBe(true);
   });
 });
