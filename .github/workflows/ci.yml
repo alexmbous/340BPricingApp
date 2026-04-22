@@ -65,6 +65,9 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @apexcare/api exec prisma generate
+      # Build workspace packages the API depends on — filters bypass turbo,
+      # so their dist/ has to exist before jest resolves `@apexcare/*`.
+      - run: pnpm --filter @apexcare/shared-types --filter @apexcare/providers-contracts --filter @apexcare/api-client build
       - run: pnpm --filter @apexcare/api exec prisma migrate deploy
       - run: pnpm --filter @apexcare/api test
       - run: pnpm --filter @apexcare/api test:e2e

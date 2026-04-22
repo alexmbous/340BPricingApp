@@ -26,7 +26,7 @@ COPY --from=deps /workspace/apps/api/node_modules ./apps/api/node_modules
 COPY --from=deps /workspace/packages ./packages
 COPY . .
 
-RUN pnpm --filter @apexcare/api prisma generate \
+RUN pnpm --filter @apexcare/api exec prisma generate \
  && pnpm --filter @apexcare/shared-types build \
  && pnpm --filter @apexcare/providers-contracts build \
  && pnpm --filter @apexcare/api build
